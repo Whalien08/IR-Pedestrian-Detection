@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import os
 import tensorflow as tf
-from tensorflow.python.keras.layers import Input, Conv2D, Conv2DTranspose, LeakyReLU, Activation, Concatenate, BatchNormalization, Dropout # and so on...
+from tensorflow.python.keras.layers import Input, Conv2D, Conv2DTranspose, LeakyReLU, Activation, Concatenate, BatchNormalization, Dropout 
 from tensorflow.python.keras.models import Model
 from tensorflow.python.keras.optimizers import Adam
 from pathlib import Path
