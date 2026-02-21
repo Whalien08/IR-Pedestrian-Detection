@@ -7,5 +7,3 @@ gan/data/
 
 # Ignore environment and weights
 myenv/
-*.h5
-*.pth
