@@ -1,0 +1,1 @@
+The model weights (thermal_gan_best.h5) are 167MB and are not stored in this repository to keep it lightweight. Please download them from [https://drive.google.com/file/d/147NhdBEK3N1RkNq5qMZRRLAROHuihy5_/view?usp=drive_link]
