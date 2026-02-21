@@ -1,0 +1,11 @@
+# Ignore everything in the data folder
+gan/data/
+
+# Ignore python cache
+**/__pycache__/
+*.pyc
+
+# Ignore environment and weights
+myenv/
+*.h5
+*.pth
