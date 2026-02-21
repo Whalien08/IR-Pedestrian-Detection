@@ -16,7 +16,7 @@ CONFIG = {
     "LR": 2e-4,
     "BETA_1": 0.5,
     "SAVE_FREQ": 1,        # Save every epoch so you don't lose progress
-    "DATA_PATH": "/kaggle/input/datasets/himawariricttoslock/pedestrian-thermal-data/data"
+    "DATA_PATH": "C:\Users\Nyx\Desktop\IR Pedestrian Detection\gan\data\training"
 }
 
 # --- 2. DATA LOADING & PREPROCESSING ---
