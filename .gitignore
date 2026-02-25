@@ -10,4 +10,16 @@ myenv/
 *.h5
 *.pth
 
-yolov8/result/yolov8-2results/yolo_data/images/train/
+# Ignore result folders
+result/
+yolov8/result/
+
+# Ignore YOLO outputs
+runs/
+*.pt
+*.onnx
+*.engine
+
+# Python cache
+__pycache__/
+*.pyc
