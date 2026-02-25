@@ -9,3 +9,5 @@ gan/data/
 myenv/
 *.h5
 *.pth
+
+yolo_data/images/train
