@@ -12,7 +12,7 @@ myenv/
 
 # Ignore result folders
 result/
-yolov8/result/
+yolov8/result/**
 
 # Ignore YOLO outputs
 runs/
