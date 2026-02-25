@@ -9,4 +9,20 @@ gan/data/
 myenv/
 *.h5
 *.pth
+<<<<<<< HEAD
 
+=======
+# Ignore result folders
+result/
+yolov8/result/**
+
+# Ignore YOLO outputs
+runs/
+*.pt
+*.onnx
+*.engine
+
+# Python cache
+__pycache__/
+*.pyc
+>>>>>>> ea75ec4f1d4b21f5e2a389b2b5efeb194752133a
