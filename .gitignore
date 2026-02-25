@@ -10,4 +10,4 @@ myenv/
 *.h5
 *.pth
 
-yolo_data/images/train
+yolov8/result/yolov8-2results/yolo_data/images/train/
