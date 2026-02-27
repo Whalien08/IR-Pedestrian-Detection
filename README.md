@@ -21,6 +21,12 @@ src="https://github.com/user-attachments/assets/00fa4d75-3db7-4e00-bb1a-9923759a
 ## Technical Implementation: GAN Architecture
 
 The project utilizes a Pix2Pix-style Generative Adversarial Network designed for image-to-image translation (RGB → Infrared).
+
+## GAN Structure
+
+<img width="1200" height="540" alt="structure_of_a_gan" src="https://github.com/user-attachments/assets/18acb0d4-fc43-45bc-8296-76897c701b5c" />
+
+
 ### 1. Model Architecture
 
 The system consists of a U-Net Generator for high-resolution feature mapping and a PatchGAN Discriminator to ensure local texture realism.
