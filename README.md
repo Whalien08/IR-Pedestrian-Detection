@@ -35,36 +35,36 @@ The training process was stabilized using Two-Time-Scale Update Rule (TTUR) and 
 
 ### Stabilization Strategy in train_step
 
-@tf.function
-def train_step(gan, real_rgb, real_thermal, valid, fake_label):
-    # One-Sided Label Smoothing to keep the Discriminator from overpowering the Generator
-    smoothed_valid = valid * 0.9 
-    
-    with tf.GradientTape() as g_tape, tf.GradientTape() as d_tape:
-        # Generate synthetic thermal images
-        fake_thermal = gan.generator(real_rgb, training=True)
+    @tf.function
+    def train_step(gan, real_rgb, real_thermal, valid, fake_label):
+        # One-Sided Label Smoothing to keep the Discriminator from overpowering the Generator
+        smoothed_valid = valid * 0.9 
         
-        # Discriminator evaluation
-        pred_real = gan.discriminator([real_thermal, real_rgb], training=True)
-        pred_fake = gan.discriminator([fake_thermal, real_rgb], training=True)
-        
-        # LSGAN Loss calculation
-        d_loss = 0.5 * (tf.reduce_mean(tf.square(smoothed_valid - pred_real)) + 
-                        tf.reduce_mean(tf.square(fake_label - pred_fake)))
-        
-        # Generator Loss (GAN Loss + L1 Pixel-wise Reconstruction Loss)
-        validity = gan.discriminator([fake_thermal, real_rgb], training=False)
-        g_loss_gan = tf.reduce_mean(tf.square(valid - validity))
-        g_loss_l1 = tf.reduce_mean(tf.abs(real_thermal - fake_thermal))
-        total_g_loss = g_loss_gan + (100 * g_loss_l1)
+        with tf.GradientTape() as g_tape, tf.GradientTape() as d_tape:
+            # Generate synthetic thermal images
+            fake_thermal = gan.generator(real_rgb, training=True)
+            
+            # Discriminator evaluation
+            pred_real = gan.discriminator([real_thermal, real_rgb], training=True)
+            pred_fake = gan.discriminator([fake_thermal, real_rgb], training=True)
+            
+            # LSGAN Loss calculation
+            d_loss = 0.5 * (tf.reduce_mean(tf.square(smoothed_valid - pred_real)) + 
+                            tf.reduce_mean(tf.square(fake_label - pred_fake)))
+            
+            # Generator Loss (GAN Loss + L1 Pixel-wise Reconstruction Loss)
+            validity = gan.discriminator([fake_thermal, real_rgb], training=False)
+            g_loss_gan = tf.reduce_mean(tf.square(valid - validity))
+            g_loss_l1 = tf.reduce_mean(tf.abs(real_thermal - fake_thermal))
+            total_g_loss = g_loss_gan + (100 * g_loss_l1)
 
-    # Gradient Application
-    g_grads = g_tape.gradient(total_g_loss, gan.generator.trainable_variables)
-    d_grads = d_tape.gradient(d_loss, gan.discriminator.trainable_variables)
-    
-    gan.g_opt.apply_gradients(zip(g_grads, gan.generator.trainable_variables))
-    gan.d_opt.apply_gradients(zip(d_grads, gan.discriminator.trainable_variables))
-    return d_loss, total_g_loss, fake_thermal
+        # Gradient Application
+        g_grads = g_tape.gradient(total_g_loss, gan.generator.trainable_variables)
+        d_grads = d_tape.gradient(d_loss, gan.discriminator.trainable_variables)
+        
+        gan.g_opt.apply_gradients(zip(g_grads, gan.generator.trainable_variables))
+        gan.d_opt.apply_gradients(zip(d_grads, gan.discriminator.trainable_variables))
+        return d_loss, total_g_loss, fake_thermal
 
 ### 3. Configuration & Hyperparameters
 
