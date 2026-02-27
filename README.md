@@ -34,6 +34,7 @@ The system consists of a U-Net Generator for high-resolution feature mapping and
 The training process was stabilized using Two-Time-Scale Update Rule (TTUR) and One-Sided Label Smoothing to prevent mode collapse.
 
 ### Stabilization Strategy in train_step
+
 @tf.function
 def train_step(gan, real_rgb, real_thermal, valid, fake_label):
     # One-Sided Label Smoothing to keep the Discriminator from overpowering the Generator
