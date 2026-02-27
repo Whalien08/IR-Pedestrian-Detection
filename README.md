@@ -83,6 +83,11 @@ To achieve optimal results at Epoch 22, the following parameters were utilized:
 ## Model Architecture: YOLOv8
 
 This project utilizes the YOLOv8 architecture for real-time object detection. YOLOv8 is a state-of-the-art model that unifies feature extraction, multi-scale fusion, and decoupled detection heads.
+
+### **Detection Architecture (YOLOv8)**
+The project utilizes a YOLOv8 framework for real-time pedestrian perception.
+![YOLOv8 Architecture](!(image.png))
+
 ## 1. Backbone (Feature Extractor)
 
 The backbone is responsible for extracting hierarchical features from the input image.
