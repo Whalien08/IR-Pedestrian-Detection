@@ -17,10 +17,11 @@ This project focuses on enhancing pedestrian detection in low-visibility conditi
 ## Data Flow Diagram
 src="https://github.com/user-attachments/assets/00fa4d75-3db7-4e00-bb1a-9923759a9eb0" />
 
+
 ## Technical Implementation: GAN Architecture
 
 The project utilizes a Pix2Pix-style Generative Adversarial Network designed for image-to-image translation (RGB → Infrared).
-1. Model Architecture
+### 1. Model Architecture
 
 The system consists of a U-Net Generator for high-resolution feature mapping and a PatchGAN Discriminator to ensure local texture realism.
 
@@ -28,11 +29,11 @@ The system consists of a U-Net Generator for high-resolution feature mapping and
 
     Discriminator: A Markovian discriminator (PatchGAN) that penalizes structure at the scale of image patches, promoting sharper thermal gradients.
 
-2. Training Engine & Optimization
+### 2. Training Engine & Optimization
 
 The training process was stabilized using Two-Time-Scale Update Rule (TTUR) and One-Sided Label Smoothing to prevent mode collapse.
 
-# Stabilization Strategy in train_step
+### Stabilization Strategy in train_step
 @tf.function
 def train_step(gan, real_rgb, real_thermal, valid, fake_label):
     # One-Sided Label Smoothing to keep the Discriminator from overpowering the Generator
@@ -64,7 +65,7 @@ def train_step(gan, real_rgb, real_thermal, valid, fake_label):
     gan.d_opt.apply_gradients(zip(d_grads, gan.discriminator.trainable_variables))
     return d_loss, total_g_loss, fake_thermal
 
-3. Configuration & Hyperparameters
+### 3. Configuration & Hyperparameters
 
 To achieve optimal results at Epoch 22, the following parameters were utilized:
 
