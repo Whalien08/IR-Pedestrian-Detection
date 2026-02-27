@@ -80,6 +80,37 @@ To achieve optimal results at Epoch 22, the following parameters were utilized:
 
     L1 Weight: 100 (High importance on structural accuracy)
 
+## Model Architecture: YOLOv8
+
+This project utilizes the YOLOv8 architecture for real-time object detection. YOLOv8 is a state-of-the-art model that unifies feature extraction, multi-scale fusion, and decoupled detection heads.
+## 1. Backbone (Feature Extractor)
+
+The backbone is responsible for extracting hierarchical features from the input image.
+
+    CSPDarknet53: Used to capture both low-level textures and high-level semantic information.
+
+    C2f Module: Replaces the C3 modules from previous versions. It uses additional skip connections and split operations to improve gradient flow and learning efficiency.
+
+    SPPF (Spatial Pyramid Pooling-Fast): Pools feature maps into a fixed size, ensuring the model handles various input dimensions effectively.
+
+## 2. Neck (Feature Aggregator)
+
+The neck acts as a bridge, fusing multi-scale features to detect objects of different sizes.
+
+    PAN-FPN: YOLOv8 employs a Path Aggregation Network (PAN) combined with a Feature Pyramid Network (FPN) structure.
+
+    Function: It aggregates feature maps from different stages of the backbone, enabling the model to retain both spatial detail and semantic context.
+
+## 3. Head (Detection)
+
+The detection head generates the final bounding boxes and class probabilities.
+
+    Anchor-Free Design: Unlike older versions, YOLOv8 predicts an object's midpoint directly rather than using predefined anchor boxes.
+
+    Decoupled Head: The classification and regression (bounding box) tasks are processed in separate branches, which significantly improves detection performance.
+
+
+
 ## Results
 
 The final model generates IR images where pedestrians are clearly distinguishable from the background, even when overlapping. This allows for more reliable pedestrian detection in simulated traffic scenarios.
