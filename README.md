@@ -14,6 +14,8 @@ This project focuses on enhancing pedestrian detection in low-visibility conditi
 
     4. Integration: Visualizing detections within a simulated traffic environment.
 
+![Data Flow](image.png)
+
 ## Results
 
 The final model generates IR images where pedestrians are clearly distinguishable from the background, even when overlapping. This allows for more reliable pedestrian detection in simulated traffic scenarios.
