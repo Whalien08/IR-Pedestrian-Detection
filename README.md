@@ -6,13 +6,13 @@ This project focuses on enhancing pedestrian detection in low-visibility conditi
 
 ## Technical Workflow
 
-    Dataset Preparation: Resizing and normalizing 10,400 paired RGB-Thermal images.
+    1. Dataset Preparation: Resizing and normalizing 10,400 paired RGB-Thermal images.
 
-    Synthetic Generation: Training a GAN (Epoch 22 selected as optimal) to translate RGB features into thermal heat signatures.
+    2. Synthetic Generation: Training a GAN (Epoch 22 selected as optimal) to translate RGB features into thermal  heat signatures.
 
-    Perception: Using YOLO to detect pedestrians in generated thermal frames, specifically handling overlapping subjects.
+    3. Perception: Using YOLO to detect pedestrians in generated thermal frames, specifically handling overlapping subjects.
 
-    Integration: Visualizing detections within a simulated traffic environment.
+    4. Integration: Visualizing detections within a simulated traffic environment.
 
 ## Results
 
