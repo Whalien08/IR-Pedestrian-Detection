@@ -14,7 +14,7 @@ This project focuses on enhancing pedestrian detection in low-visibility conditi
 
     4. Integration: Visualizing detections within a simulated traffic environment.
 
-![Data Flow](image.png)
+## Data Flow Diagram
 
 ## Results
 
