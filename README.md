@@ -15,7 +15,9 @@ This project focuses on enhancing pedestrian detection in low-visibility conditi
     4. Integration: Visualizing detections within a simulated traffic environment.
 
 ## Data Flow Diagram
-src="https://github.com/user-attachments/assets/00fa4d75-3db7-4e00-bb1a-9923759a9eb0" />
+
+<img width="2818" height="1024" alt="Screenshot 2026-02-27 201952" src="https://github.com/user-attachments/assets/720cdec0-80e6-4cda-aaff-ecde60a1d7ab" />
+
 
 
 ## Technical Implementation: GAN Architecture
@@ -95,8 +97,9 @@ This project utilizes the YOLOv8 architecture for real-time object detection. YO
 ### **Detection Architecture (YOLOv8)**
 The project utilizes a YOLOv8 framework for real-time pedestrian perception.
 
-YOLOv8 Architecture src="https://github.com/user-attachments/assets/8412dca9-49e2-4d20-a3a7-03088b602884" />
+## YOLOv8 Architecture 
 
+<img width="850" height="717" alt="YOLOv8-overall-architecture-diagram" src="https://github.com/user-attachments/assets/34e1ad35-1a29-4aa8-84f5-ec444d21061e" />
 
 
 ## 1. Backbone (Feature Extractor)
