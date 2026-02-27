@@ -10,7 +10,7 @@ from tensorflow.keras.models import Model
 from tensorflow.keras.optimizers import Adam
 from pathlib import Path
 import random
-# --- 1. CONFIGURATION ---
+# 1. CONFIGURATION 
 CONFIG = {
     "IMG_SIZE": (512, 512, 3),
     "BATCH_SIZE": 1,
@@ -22,7 +22,7 @@ CONFIG = {
     "DATA_PATH": "/kaggle/input/datasets/himawariricttoslock/pedestrian-thermal-data/data"
 }
 
-# --- 2. DATA LOADING & PREPROCESSING ---
+# 2. DATA LOADING & PREPROCESSING 
 def load_and_preprocess(image_path, target_path):
     def process_img(path):
         img = tf.io.read_file(path)
@@ -55,7 +55,7 @@ def get_image_lists(base_path):
     thermals = sorted([str(f) for f in thermal_path.glob("*") if f.stat().st_size > 0])
     return rgbs, thermals
 
-# --- 3. MODEL ARCHITECTURE ---
+# 3. MODEL ARCHITECTURE 
 def build_generator(input_shape):
     def downsample(filters, size, apply_batchnorm=True):
         result = tf.keras.Sequential()
@@ -123,7 +123,7 @@ class ThermalGAN:
         self.g_opt = Adam(config["G_LR"], beta_1=config["BETA_1"])
         self.d_opt = Adam(config["D_LR"], beta_1=config["BETA_1"])
 
-# --- 4. TRAINING ENGINE ---
+#  4. TRAINING ENGINE 
 @tf.function
 def train_step(gan, real_rgb, real_thermal, valid, fake_label):
     smoothed_valid = valid * 0.9 
@@ -176,7 +176,7 @@ def save_preview(epoch, rgb, thermal, fake):
         plt.subplot(1, 3, i+1); plt.imshow(imgs[i]); plt.title(titles[i]); plt.axis('off')
     plt.savefig(f'output_visuals/epoch_{epoch+1}.png'); plt.close()
 
-# --- 5. EXECUTION ---
+# 5. EXECUTION 
 if __name__ == "__main__":
     rgb_imgs, thermal_imgs = get_image_lists(CONFIG["DATA_PATH"])
     if len(rgb_imgs) > 0 and len(rgb_imgs) == len(thermal_imgs):
