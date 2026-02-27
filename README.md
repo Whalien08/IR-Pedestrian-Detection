@@ -86,7 +86,8 @@ This project utilizes the YOLOv8 architecture for real-time object detection. YO
 
 ### **Detection Architecture (YOLOv8)**
 The project utilizes a YOLOv8 framework for real-time pedestrian perception.
-![YOLOv8 Architecture](!(image.png))
+![YOLOv8 Architecture]src="https://github.com/user-attachments/assets/8412dca9-49e2-4d20-a3a7-03088b602884" />
+
 
 ## 1. Backbone (Feature Extractor)
 
