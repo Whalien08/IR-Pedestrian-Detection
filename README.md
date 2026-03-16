@@ -88,6 +88,14 @@ To achieve optimal results at Epoch 22, the following parameters were utilized:
 
     L1 Weight: 100 (High importance on structural accuracy)
 
+###RGB Image
+<img width="559" height="536" alt="image" src="https://github.com/user-attachments/assets/1b247f0a-1740-4db5-ad2b-41b70541129c" />
+
+### Synthetic Image
+<img width="512" height="512" alt="image" src="https://github.com/user-attachments/assets/edc15b34-54c1-4efc-8d4c-60d3abb3b19d" />
+
+
+
 ## Model Architecture: YOLOv8
 
 This project utilizes the YOLOv8 architecture for real-time object detection. YOLOv8 is a state-of-the-art model that unifies feature extraction, multi-scale fusion, and decoupled detection heads.
