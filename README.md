@@ -28,6 +28,9 @@ The project utilizes a Pix2Pix-style Generative Adversarial Network designed for
 
 <img width="1200" height="540" alt="structure_of_a_gan" src="https://github.com/user-attachments/assets/18acb0d4-fc43-45bc-8296-76897c701b5c" />
 
+<img width="1425" height="1310" alt="image" src="https://github.com/user-attachments/assets/25974dd2-1e2b-4c89-b40e-a3ba48cb9ee3" />
+
+
 
 ### 1. Model Architecture
 
@@ -91,7 +94,7 @@ To achieve optimal results at Epoch 22, the following parameters were utilized:
 ### RGB Image
 <img width="559" height="536" alt="image" src="https://github.com/user-attachments/assets/1b247f0a-1740-4db5-ad2b-41b70541129c" />
 
-### Synthetic Image
+### Synthetic Thermal Image
 <img width="512" height="512" alt="image" src="https://github.com/user-attachments/assets/edc15b34-54c1-4efc-8d4c-60d3abb3b19d" />
 
 
