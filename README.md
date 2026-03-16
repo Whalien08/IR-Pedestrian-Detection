@@ -88,7 +88,7 @@ To achieve optimal results at Epoch 22, the following parameters were utilized:
 
     L1 Weight: 100 (High importance on structural accuracy)
 
-###RGB Image
+### RGB Image
 <img width="559" height="536" alt="image" src="https://github.com/user-attachments/assets/1b247f0a-1740-4db5-ad2b-41b70541129c" />
 
 ### Synthetic Image
