@@ -15,12 +15,29 @@ This project focuses on enhancing pedestrian detection in low-visibility conditi
     4. Integration: Visualizing detections within a simulated traffic environment.
 
 ## Data Flow Diagram
-src="https://github.com/user-attachments/assets/00fa4d75-3db7-4e00-bb1a-9923759a9eb0" />
+
+<img width="2818" height="1024" alt="Screenshot 2026-02-27 201952" src="https://github.com/user-attachments/assets/720cdec0-80e6-4cda-aaff-ecde60a1d7ab" />
+
 
 
 ## Technical Implementation: GAN Architecture
 
 The project utilizes a Pix2Pix-style Generative Adversarial Network designed for image-to-image translation (RGB → Infrared).
+
+## GAN Structure
+
+The Generator follows a U-Net architecture. It consists of an encoder that reduces the input to
+a bottleneck and a decoder that reconstructs the thermal image. Skip connections ensure that
+the location of pedestrians is not lost during the downsampling process
+
+<img width="1200" height="540" alt="structure_of_a_gan" src="https://github.com/user-attachments/assets/18acb0d4-fc43-45bc-8296-76897c701b5c" />
+
+### GAN Training Pipeline and Data Flow
+
+<img width="1425" height="1310" alt="image" src="https://github.com/user-attachments/assets/25974dd2-1e2b-4c89-b40e-a3ba48cb9ee3" />
+
+
+
 ### 1. Model Architecture
 
 The system consists of a U-Net Generator for high-resolution feature mapping and a PatchGAN Discriminator to ensure local texture realism.
@@ -80,6 +97,14 @@ To achieve optimal results at Epoch 22, the following parameters were utilized:
 
     L1 Weight: 100 (High importance on structural accuracy)
 
+### RGB Image
+<img width="559" height="536" alt="image" src="https://github.com/user-attachments/assets/1b247f0a-1740-4db5-ad2b-41b70541129c" />
+
+### Synthetic Thermal Image
+<img width="512" height="512" alt="image" src="https://github.com/user-attachments/assets/edc15b34-54c1-4efc-8d4c-60d3abb3b19d" />
+
+
+
 ## Model Architecture: YOLOv8
 
 This project utilizes the YOLOv8 architecture for real-time object detection. YOLOv8 is a state-of-the-art model that unifies feature extraction, multi-scale fusion, and decoupled detection heads.
@@ -89,8 +114,9 @@ This project utilizes the YOLOv8 architecture for real-time object detection. YO
 ### **Detection Architecture (YOLOv8)**
 The project utilizes a YOLOv8 framework for real-time pedestrian perception.
 
-YOLOv8 Architecture src="https://github.com/user-attachments/assets/8412dca9-49e2-4d20-a3a7-03088b602884" />
+## YOLOv8 Architecture 
 
+<img width="850" height="717" alt="YOLOv8-overall-architecture-diagram" src="https://github.com/user-attachments/assets/34e1ad35-1a29-4aa8-84f5-ec444d21061e" />
 
 
 ## 1. Backbone (Feature Extractor)
