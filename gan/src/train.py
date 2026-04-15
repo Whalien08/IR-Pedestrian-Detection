@@ -166,7 +166,7 @@ def train(gan_model, dataset, config, start_epoch=0):
 
         if (epoch + 1) % config["SAVE_FREQ"] == 0:
             save_preview(epoch, real_rgb, real_thermal, fake_thermal)
-            gan_model.generator.save(f"saved_models/thermal_gen_epoch_{epoch+1}.h5")
+            gan_model.generator.save(f"saved_models/thermal_gen_epoch_{epoch+1}.keras")
 
 def save_preview(epoch, rgb, thermal, fake):
     rgb, thermal, fake = (rgb[0]+1)/2, (thermal[0]+1)/2, (fake[0]+1)/2

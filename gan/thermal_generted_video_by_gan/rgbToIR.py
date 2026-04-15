@@ -6,7 +6,7 @@ from tqdm import tqdm
 
 # --- Your existing GAN functions (Keep these exactly as they are) ---
 def load_model(model_path):
-    return tf.keras.models.load_model(model_path, compile=False)
+    return tf.keras.models.load_model(model_path, compile=False, safe_mode=True)
 
 def preprocess_image(img, target_size=(512, 512)):
     img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)

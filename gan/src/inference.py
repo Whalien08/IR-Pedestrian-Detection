@@ -9,7 +9,7 @@ from tqdm import tqdm
 def load_model(model_path):
     """ Load the TensorFlow model from the specified path. """
     try:
-        model = tf.keras.models.load_model(model_path, compile=False)
+        model = tf.keras.models.load_model(model_path, compile=False, safe_mode=True)
     except Exception as e:
         print(f"Error loading model: {e}")
         return None
@@ -85,8 +85,9 @@ def display_thermal_results(input_rgb_folder, model, num_to_show=8):
     print(f"Images saved successfully to: {output_dir}")
 
 # Run the script
-model_path = '/kaggle/input/notebooks/himawariricttoslock/gan-4-3/saved_models/thermal_gen_epoch_22.h5'
-model = load_model(model_path)
+if __name__ == "__main__":
+    model_path = '/kaggle/input/notebooks/himawariricttoslock/gan-4-3/saved_models/thermal_gen_epoch_22.h5'
+    model = load_model(model_path)
 
-if model:
-    display_thermal_results('/kaggle/input/datasets/himawariricttoslock/input-170s/rgb images', model, num_to_show=170)
+    if model:
+        display_thermal_results('/kaggle/input/datasets/himawariricttoslock/input-170s/rgb images', model, num_to_show=170)
