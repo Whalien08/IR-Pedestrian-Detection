@@ -1,15 +1,19 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import os
+import csv
 import tensorflow as tf
 from tensorflow.keras.layers import (
     Input, Conv2D, UpSampling2D, LeakyReLU, 
-    Activation, Concatenate, BatchNormalization, Dropout
+    Activation, Concatenate, BatchNormalization, Dropout, RandomRotation
 )
 from tensorflow.keras.models import Model
 from tensorflow.keras.optimizers import Adam
+from tensorflow.keras.applications import VGG19
+from tensorflow.keras.applications.vgg19 import preprocess_input
 from pathlib import Path
 import random
+
 # 1. CONFIGURATION 
 CONFIG = {
     "IMG_SIZE": (512, 512, 3),
@@ -23,6 +27,9 @@ CONFIG = {
 }
 
 # 2. DATA LOADING & PREPROCESSING 
+# Instantiate RandomRotation outside the mapped function to prevent variable creation in graph mode
+rotation_layer = RandomRotation(factor=0.02)
+
 def load_and_preprocess(image_path, target_path):
     def process_img(path):
         img = tf.io.read_file(path)
@@ -33,12 +40,25 @@ def load_and_preprocess(image_path, target_path):
     t_img = process_img(target_path)
     r_img = process_img(image_path)
     
-    stacked = tf.stack([t_img, r_img])
-    cropped = tf.image.random_crop(stacked, size=[2, 512, 512, 3])
-    flipped = tf.image.random_flip_left_right(cropped)
+    # Concatenate along channel axis to ensure identical spatial transformations
+    concat_img = tf.concat([t_img, r_img], axis=-1)
+
+    # Random Crop
+    cropped = tf.image.random_crop(concat_img, size=[512, 512, 6])
+
+    # Random Horizontal Flip (handles probability internally)
+    cropped = tf.image.random_flip_left_right(cropped)
+
+    # Expand dims for RandomRotation, rotate, and squeeze
+    cropped = tf.expand_dims(cropped, axis=0)
+    rotated = rotation_layer(cropped, training=True)
+    rotated = tf.squeeze(rotated, axis=0)
     
-    t_final = (tf.cast(flipped[0], tf.float32) / 127.5) - 1.0
-    r_final = (tf.cast(flipped[1], tf.float32) / 127.5) - 1.0
+    t_img_aug = rotated[..., :3]
+    r_img_aug = rotated[..., 3:]
+
+    t_final = (tf.cast(t_img_aug, tf.float32) / 127.5) - 1.0
+    r_final = (tf.cast(r_img_aug, tf.float32) / 127.5) - 1.0
     return r_final, t_final
 
 class FastDataset:
@@ -116,10 +136,20 @@ def build_discriminator(input_shape):
     validity = Conv2D(1, kernel_size=4, strides=1, padding='same')(d4)
     return Model([img_A, img_B], validity)
 
+
+def build_vgg_feature_extractor(input_shape):
+    vgg = VGG19(include_top=False, weights='imagenet', input_shape=input_shape)
+    vgg.trainable = False
+    # Using block3_conv3 as requested
+    output_layer = vgg.get_layer('block3_conv3').output
+    model = Model(inputs=vgg.input, outputs=output_layer)
+    return model
+
 class ThermalGAN:
     def __init__(self, config):
         self.generator = build_generator(config["IMG_SIZE"])
         self.discriminator = build_discriminator(config["IMG_SIZE"])
+        self.vgg = build_vgg_feature_extractor(config["IMG_SIZE"])
         self.g_opt = Adam(config["G_LR"], beta_1=config["BETA_1"])
         self.d_opt = Adam(config["D_LR"], beta_1=config["BETA_1"])
 
@@ -137,32 +167,73 @@ def train_step(gan, real_rgb, real_thermal, valid, fake_label):
         d_loss = 0.5 * (tf.reduce_mean(tf.square(smoothed_valid - pred_real)) + 
                         tf.reduce_mean(tf.square(fake_label - pred_fake)))
         
+        # Generator Losses
         validity = gan.discriminator([fake_thermal, real_rgb], training=False)
         g_loss_gan = tf.reduce_mean(tf.square(valid - validity))
         g_loss_l1 = tf.reduce_mean(tf.abs(real_thermal - fake_thermal))
-        total_g_loss = g_loss_gan + (100 * g_loss_l1)
+
+        # VGG Perceptual Loss (scale from [-1, 1] to [0, 255])
+        real_thermal_vgg = preprocess_input((real_thermal + 1.0) * 127.5)
+        fake_thermal_vgg = preprocess_input((fake_thermal + 1.0) * 127.5)
+
+        real_features = gan.vgg(real_thermal_vgg, training=False)
+        fake_features = gan.vgg(fake_thermal_vgg, training=False)
+        g_loss_perceptual = tf.reduce_mean(tf.abs(real_features - fake_features))
+
+        total_g_loss = g_loss_gan + (50 * g_loss_l1) + (10 * g_loss_perceptual)
 
     g_grads = g_tape.gradient(total_g_loss, gan.generator.trainable_variables)
     d_grads = d_tape.gradient(d_loss, gan.discriminator.trainable_variables)
     
     gan.g_opt.apply_gradients(zip(g_grads, gan.generator.trainable_variables))
     gan.d_opt.apply_gradients(zip(d_grads, gan.discriminator.trainable_variables))
-    return d_loss, total_g_loss, fake_thermal
+    return d_loss, g_loss_gan, g_loss_l1, g_loss_perceptual, total_g_loss, fake_thermal
 
 def train(gan_model, dataset, config, start_epoch=0):
     os.makedirs('output_visuals', exist_ok=True)
     os.makedirs('saved_models', exist_ok=True)
     
+    csv_file = 'training_losses.csv'
+    write_header = not os.path.exists(csv_file)
+    with open(csv_file, mode='a', newline='') as f:
+        writer = csv.writer(f)
+        if write_header:
+            writer.writerow(['Epoch', 'D_Loss', 'G_Loss_GAN', 'G_Loss_L1', 'G_Loss_Perceptual', 'Total_G_Loss'])
+
     patch = gan_model.discriminator.output_shape[1]
     valid = tf.ones((config["BATCH_SIZE"], patch, patch, 1))
     fake_label = tf.zeros((config["BATCH_SIZE"], patch, patch, 1))
 
     for epoch in range(start_epoch, config["EPOCHS"]):
+        epoch_d_loss = []
+        epoch_g_gan = []
+        epoch_g_l1 = []
+        epoch_g_perceptual = []
+        epoch_total_g = []
+
         for batch_i, (real_rgb, real_thermal) in enumerate(dataset.loader):
-            d_loss, g_loss, fake_thermal = train_step(gan_model, real_rgb, real_thermal, valid, fake_label)
+            d_loss, g_loss_gan, g_loss_l1, g_loss_perceptual, total_g_loss, fake_thermal = train_step(gan_model, real_rgb, real_thermal, valid, fake_label)
+
+            epoch_d_loss.append(d_loss)
+            epoch_g_gan.append(g_loss_gan)
+            epoch_g_l1.append(g_loss_l1)
+            epoch_g_perceptual.append(g_loss_perceptual)
+            epoch_total_g.append(total_g_loss)
             
             if batch_i % 100 == 0:
-                print(f"E{epoch+1} B{batch_i} | D: {d_loss:.4f} | G: {g_loss:.4f}")
+                print(f"E{epoch+1} B{batch_i} | D: {d_loss:.4f} | G_GAN: {g_loss_gan:.4f} | G_L1: {g_loss_l1:.4f} | G_VGG: {g_loss_perceptual:.4f} | G_Tot: {total_g_loss:.4f}")
+
+        avg_d_loss = np.mean(epoch_d_loss)
+        avg_g_gan = np.mean(epoch_g_gan)
+        avg_g_l1 = np.mean(epoch_g_l1)
+        avg_g_perceptual = np.mean(epoch_g_perceptual)
+        avg_total_g = np.mean(epoch_total_g)
+
+        with open(csv_file, mode='a', newline='') as f:
+            writer = csv.writer(f)
+            writer.writerow([epoch+1, avg_d_loss, avg_g_gan, avg_g_l1, avg_g_perceptual, avg_total_g])
+
+        print(f"--> Epoch {epoch+1} Averages | D: {avg_d_loss:.4f} | G_GAN: {avg_g_gan:.4f} | G_L1: {avg_g_l1:.4f} | G_VGG: {avg_g_perceptual:.4f} | G_Tot: {avg_total_g:.4f}")
 
         if (epoch + 1) % config["SAVE_FREQ"] == 0:
             save_preview(epoch, real_rgb, real_thermal, fake_thermal)
