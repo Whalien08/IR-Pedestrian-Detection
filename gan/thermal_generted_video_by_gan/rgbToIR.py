@@ -4,7 +4,7 @@ import numpy as np
 import tensorflow as tf
 from tqdm import tqdm
 
-# --- Your existing GAN functions (Keep these exactly as they are) ---
+
 def load_model(model_path):
     return tf.keras.models.load_model(model_path, compile=False, safe_mode=True)
 
@@ -23,7 +23,6 @@ def postprocess_thermal_data(prediction):
     thermal_data = cv2.addWeighted(thermal_data, 1.5, gaussian_3, -0.5, 0)
     return thermal_data
 
-# --- NEW: Video Processing Function ---
 def convert_video_to_ir(input_video_path, model, output_path='/kaggle/working/output_thermal.mp4'):
     # 1. Open the input video
     cap = cv2.VideoCapture(input_video_path)
@@ -31,14 +30,12 @@ def convert_video_to_ir(input_video_path, model, output_path='/kaggle/working/ou
         print("Error: Could not open video.")
         return
 
-    # 2. Get video metadata
+
     fps = int(cap.get(cv2.CAP_PROP_FPS))
     width = 512  # We match your GAN target size
     height = 512
     total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
 
-    # 3. Define the Codec and create VideoWriter
-    # 'mp4v' is standard for .mp4 files
     fourcc = cv2.VideoWriter_fourcc(*'mp4v')
     out = cv2.VideoWriter(output_path, fourcc, fps, (width, height), isColor=False)
 
@@ -67,7 +64,7 @@ def convert_video_to_ir(input_video_path, model, output_path='/kaggle/working/ou
     out.release()
     print(f"Video saved successfully to: {output_path}")
 
-# --- RUN THE VIDEO CONVERSION ---
+
 model_path = '/kaggle/input/notebooks/himawariricttoslock/gan-4-3/saved_models/thermal_gen_epoch_5.h5'
 input_video = '/kaggle/input/datasets/himawariricttoslock/japanvid/mixkit-people-walking-in-the-street-in-japan-4437-hd-ready.mp4' 
 
