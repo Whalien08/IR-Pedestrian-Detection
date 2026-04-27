@@ -20,7 +20,7 @@ CONFIG = {
     "BATCH_SIZE": 1,
     "EPOCHS": 22,
     "G_LR": 2e-4,      
-    "D_LR": 5e-5,      # Lower D_LR to prevent collapse
+    "D_LR": 5e-5,     
     "BETA_1": 0.5,
     "SAVE_FREQ": 1,
     "DATA_PATH": "/kaggle/input/datasets/himawariricttoslock/pedestrian-thermal-data/data"
@@ -254,22 +254,19 @@ if __name__ == "__main__":
     if len(rgb_imgs) > 0 and len(rgb_imgs) == len(thermal_imgs):
         gan = ThermalGAN(CONFIG)
         
-        # RESUME FROM EPOCH 12
         weight_path = '/kaggle/input/notebooks/himawariricttoslock/gan-4-3/saved_models/thermal_gen_epoch_12.h5'
-        
-        # --- THE FIX: Initialize start_epoch before the if statement ---
+
         start_epoch = 0 
         
         if os.path.exists(weight_path):
             gan.generator.load_weights(weight_path)
-            # Set to 12 so the loop starts at 13
             start_epoch = 12 
-            # Set target to 22 (approx 2 hours of work)
+
             CONFIG["EPOCHS"] = 22 
-            print(f"✅ Resuming from Epoch 12. Target: Epoch 22.")
+            print(f" Resuming from Epoch 12. Target: Epoch 22.")
         else:
-            print(f"⚠️ WARNING: Could not find weights at {weight_path}")
-            print(f"⚠️ Make sure your 'gan-4-3' notebook is attached in the right-hand data panel! Starting from Epoch 0.")
+            print(f" WARNING: Could not find weights at {weight_path}")
+            print(f" Make sure your 'gan-4-3' notebook is attached in the right-hand data panel! Starting from Epoch 0.")
         
         data = FastDataset(rgb_imgs, thermal_imgs, CONFIG["BATCH_SIZE"])
         train(gan, data, CONFIG, start_epoch=start_epoch)
