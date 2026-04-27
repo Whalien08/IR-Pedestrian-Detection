@@ -57,3 +57,4 @@ if count > 0:
         device=0,
         name="thermal_video_finetuning"
     )
+    ## After training, your new best.pt will be in /kaggle/working/runs/train/thermal_video_finetuning/weights/best.pt
